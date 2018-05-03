@@ -1,0 +1,31 @@
+<p>
+  Please register with a username and password
+</p>
+<div class="row">
+  <div class="col-4">
+    <label for="username">Username</label>
+  </div>
+  <div class="col-8">
+    <input id="username" class="form-control" [(ngModel)]="username" type="text" />
+  </div>
+</div>
+<div class="row">
+    <div class="col-4">
+      <label for="password">Password</label>
+    </div>
+    <div class="col-8">
+      <input id="password" class="form-control" [(ngModel)]="password" type="password" />
+    </div>
+</div>
+<div class="row">
+  <div class="col-4">
+    <label for="repeat">Repeat</label>
+  </div>
+  <div class="col-8">
+    <input id="repeat" class="form-control" [(ngModel)]="repeat" type="repeat" />
+  </div>
+</div>
+<div class="btn-group" role="group" aria-label="Login">
+    <button type="button" class="btn btn-primary" (click)="save()">Save</button>
+    <button type="button" class="btn btn-secondary" (click)="reset()">Reset</button>
+</div>
