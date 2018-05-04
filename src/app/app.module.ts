@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { LoginComponent } from './login/login.component';
 import { CollapseModule, BsDropdownModule  } from 'ngx-bootstrap';
+import { AuthApiService } from './services/auth-api.service';
 
 
 @NgModule({
@@ -21,7 +22,7 @@ import { CollapseModule, BsDropdownModule  } from 'ngx-bootstrap';
     CollapseModule.forRoot(), BsDropdownModule.forRoot(),
     AppRoutingModule
   ],
-  providers: [],
+  providers: [AuthApiService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
