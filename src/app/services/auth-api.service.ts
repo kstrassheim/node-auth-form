@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import * as $ from 'jquery'
+import { ReadKeyExpr } from '@angular/compiler';
 
 @Injectable()
 export class AuthApiService {
@@ -25,47 +25,30 @@ export class AuthApiService {
 
   public login(username:string, password:string) {
     return new Promise((resolve, reject) => {
-      var paramJQuery = {
-        url: this.url,
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        data: {
-          grant_type: 'password',
-          username: username,
-          password: password,
-          client_id: "angular",
-          client_secret: "angular"
-        }
-      };
-  
-      var paramObservable = {
-        url: this.url,
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: {
-          grant_type: 'password',
-          username: username,
-          password: password,
-          client_id: "angular",
-          client_secret: "angular"
-        }
-      };
-  
-      $.ajax(paramJQuery).done((r) => {
-        this.username$.next(username);
-        this.password$.next(password);
+        Observable.ajax({
+          url: this.url,
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: {
+            grant_type: 'password',
+            username: username,
+            password: password,
+            client_id: "angular",
+            client_secret: "angular"
+          }
+        }).subscribe((data) => { 
+          let r = data.response;
+          this.username$.next(username);
+          this.password$.next(password);
 
-        var t = r.access_token;
-        var expires = r.expires_in;
-        this.token$.next(r.access_token);
-        resolve(r.access_token);
-      }).fail((err) => {
-        console.error(err);
-        reject(err);
+          var t = r.access_token;
+          var expires = r.expires_in;
+          this.token$.next(r.access_token);
+          resolve(r.access_token);
+        }, err => {
+          reject(err);
       });
     });
   }
