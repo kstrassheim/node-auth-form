@@ -13,13 +13,18 @@ export class LoginComponent implements OnInit {
 
   constructor(public AuthApiService:AuthApiService) { }
 
-  public login() {
+  public async login() {
     if (!this.username) alert("Username missing");
     else if (!this.password) alert("Password missing");
     else {
-      this.AuthApiService.login(this.username, this.password)
-      alert("Login");
-      this.reset();
+      try {
+        var t = await this.AuthApiService.login(this.username, this.password);
+        alert(`Login successfull, Token: ${t}`);
+        this.reset();
+      }
+      catch(err) {
+        alert(`Login failed, ${err}`);
+      }
     }
   }
 
