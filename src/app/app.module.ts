@@ -8,21 +8,23 @@ import { RegistrationComponent } from './registration/registration.component';
 import { LoginComponent } from './login/login.component';
 import { CollapseModule, BsDropdownModule  } from 'ngx-bootstrap';
 import { AuthApiService } from './services/auth-api.service';
-
+import { LoggerService } from './services/logger.service';
+import { HomeComponent } from './home/home.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     RegistrationComponent,
-    LoginComponent
+    LoginComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     CollapseModule.forRoot(), BsDropdownModule.forRoot(),
-    AppRoutingModule
+    AppRoutingModule,
   ],
-  providers: [AuthApiService],
+  providers: [AuthApiService, LoggerService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

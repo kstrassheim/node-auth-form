@@ -1,60 +1,64 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ReadKeyExpr } from '@angular/compiler';
 
 @Injectable()
 export class AuthApiService {
 
-  private url:string = "https://nodeauthweb.azurewebsites.net/auth/login";
+  private static url = "https://nodeauthweb.azurewebsites.net/auth/login";
 
-  private username$ = new BehaviorSubject<string>("");
-  //username = this.username$.asObservable();
+  private username = new BehaviorSubject<string>(null);
+  public readonly username$ = this.username.asObservable();
+  private password = new BehaviorSubject<string>(null);
+  private token = new BehaviorSubject<string>(null);
+  public readonly token$ = this.token.asObservable();
+  private tokenExpiration= new BehaviorSubject<Date>(null)
+  public redirectUrl = new BehaviorSubject<string>(null);
 
-  private password$ = new BehaviorSubject<string>("");
-  //password = this.password.asObservable();
-
-  private token$ = new BehaviorSubject<string>("");
-  //token = this.token$.asObservable();
-
-  // token: number;
-  // token$: Observable<number>;
-
-  changeToken(tokenNext: string) {
-    
+  public setUsernameAndPassword(username:string, password:string) {
+    this.username.next(username);
+    this.password.next(password);
   }
 
-  public login(username:string, password:string) {
-    return new Promise((resolve, reject) => {
-        Observable.ajax({
-          url: this.url,
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          },
-          body: {
-            grant_type: 'password',
-            username: username,
-            password: password,
-            client_id: "angular",
-            client_secret: "angular"
-          }
-        }).subscribe((data) => { 
-          let r = data.response;
-          this.username$.next(username);
-          this.password$.next(password);
+  public logout() {
+    this.setUsernameAndPassword(null, null);
+    this.token.next(null);
+    this.tokenExpiration.next(null);
+  }
 
-          var t = r.access_token;
-          var expires = r.expires_in;
-          this.token$.next(r.access_token);
-          resolve(r.access_token);
-        }, err => {
-          reject(err);
+  public getToken() {
+    if (this.token.getValue() && new Date() < this.tokenExpiration.getValue()){
+      return Promise.resolve(this.token.getValue());
+    }
+    else {
+      return this.login();
+    }
+  }
+
+  public login() {
+      return new Promise((resolve, reject) => {
+          Observable.ajax({
+            url: AuthApiService.url,
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: {
+              grant_type: 'password',
+              username: this.username.getValue(),
+              password: this.password.getValue(),
+              client_id: "angular",
+              client_secret: "angular"
+            }
+          }).subscribe((data) => { 
+            this.tokenExpiration.next(Date.now() + data.response.expires_in);
+            this.token.next(data.response.access_token);
+            resolve(data.response.access_token);
+          }, err => {
+            this.logout();
+            reject(err);
+        });
       });
-    });
   }
-
-  constructor() { 
-
-  }
-
 }
