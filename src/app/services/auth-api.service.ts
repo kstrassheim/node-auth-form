@@ -11,14 +11,18 @@ export class AuthApiService {
   private username = new BehaviorSubject<string>(null);
   public readonly username$ = this.username.asObservable();
   private password = new BehaviorSubject<string>(null);
+  public readonly password$ = this.password.asObservable();
   private token = new BehaviorSubject<string>(null);
   public readonly token$ = this.token.asObservable();
-  private tokenExpiration= new BehaviorSubject<Date>(null)
+  private tokenExpiration= new BehaviorSubject<Date>(null);
+  public readonly tokenExpiration$ = this.tokenExpiration.asObservable();
   public redirectUrl = new BehaviorSubject<string>(null);
 
-  public setUsernameAndPassword(username:string, password:string) {
+  public setUsernameAndPassword(username:string, password:string, token?:string, tokenExpiration?:Date) {
     this.username.next(username);
     this.password.next(password);
+    if (token) this.token.next(token);
+    if (tokenExpiration) this.tokenExpiration.next(tokenExpiration);
   }
 
   public logout() {

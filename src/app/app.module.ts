@@ -6,10 +6,12 @@ import { AppRoutingModule } from './app-routing/app-routing.module';
 import { AppComponent } from './app.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { LoginComponent } from './login/login.component';
+import { HomeComponent } from './home/home.component';
 import { CollapseModule, BsDropdownModule  } from 'ngx-bootstrap';
 import { AuthApiService } from './services/auth-api.service';
 import { LoggerService } from './services/logger.service';
-import { HomeComponent } from './home/home.component';
+import { CookieService } from 'angular2-cookie/services/cookies.service';
+
 
 @NgModule({
   declarations: [
@@ -24,7 +26,7 @@ import { HomeComponent } from './home/home.component';
     CollapseModule.forRoot(), BsDropdownModule.forRoot(),
     AppRoutingModule,
   ],
-  providers: [AuthApiService, LoggerService],
+  providers: [AuthApiService, LoggerService, CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
