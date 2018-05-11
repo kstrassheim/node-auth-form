@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import * as toastr from '../../../node_modules/toastr'
 
 @Injectable()
 export class LoggerService {
@@ -8,15 +9,14 @@ export class LoggerService {
   public logInfo(message:string, isPublic = true) {
     console.log(message);
     if (isPublic) {
-      alert(message);
+      toastr.success(message);
     }
   }
 
   public logError(error:any, isPublic = true) {
     console.error(error);
     if (isPublic) {
-      alert(error && error.message ? error.message: error);
+      toastr.error(error && error.message ? error.message: error);
     }
   }
-
 }

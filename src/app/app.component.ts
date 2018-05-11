@@ -1,5 +1,5 @@
-import { Component, AfterViewInit, OnChanges } from '@angular/core';
-import {  Router, NavigationStart, NavigationCancel, NavigationEnd } from '@angular/router';
+import { Component, AfterViewInit } from '@angular/core';
+import { Router, NavigationStart, NavigationCancel, NavigationEnd } from '@angular/router';
 import { AuthApiService } from './services/auth-api.service';
 import { LoggerService } from './services/logger.service';
 
@@ -9,13 +9,13 @@ import { LoggerService } from './services/logger.service';
   styleUrls: ['./app.component.css']
 })
 
-export class AppComponent implements AfterViewInit, OnChanges {
+export class AppComponent implements AfterViewInit {
   title = 'app';
   public loading = false;
   public loggedOn = false;
   public username = '';
   public static publicRoutes = ['/registration', '/login'];
-  constructor(private router: Router, public auth:AuthApiService, public log:LoggerService) {
+  constructor(private router: Router, public auth: AuthApiService, public log: LoggerService) {
     auth.token$.subscribe(t => {
       this.loggedOn = t ? true : false; 
       //if (!this.loggedOn) this.router.navigateByUrl('/login');
@@ -23,14 +23,10 @@ export class AppComponent implements AfterViewInit, OnChanges {
     auth.username$.subscribe(u=>this.username = u);
   }
 
-  ngOnChanges() {
-    
-  }
-
   ngAfterViewInit() {
     this.router.events
         .subscribe((event) => {
-            if(event instanceof NavigationStart && !this.loading) {
+            if (event instanceof NavigationStart && !this.loading) {
                 this.loading = true;
                 // check login status and redirect to login page
                 if (!AppComponent.publicRoutes.find(o => event.url == o) && !this.loggedOn) {
