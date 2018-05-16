@@ -11,7 +11,7 @@ import { CookieService } from 'angular2-cookie/core';
 })
 
 export class AppComponent implements AfterViewInit {
-  title = 'app';
+  title = 'Usermanagement';
   public loading = false;
   public loggedOn = false;
   public username = '';

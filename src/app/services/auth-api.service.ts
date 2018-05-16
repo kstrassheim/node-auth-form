@@ -8,13 +8,13 @@ export class AuthApiService {
 
   private static url = "https://nodeauthweb.azurewebsites.net/auth/login";
 
-  private username = new BehaviorSubject<string>(null);
+  protected username = new BehaviorSubject<string>(null);
   public readonly username$ = this.username.asObservable();
-  private password = new BehaviorSubject<string>(null);
+  protected password = new BehaviorSubject<string>(null);
   public readonly password$ = this.password.asObservable();
-  private token = new BehaviorSubject<string>(null);
+  protected token = new BehaviorSubject<string>(null);
   public readonly token$ = this.token.asObservable();
-  private tokenExpiration= new BehaviorSubject<Date>(null);
+  protected tokenExpiration= new BehaviorSubject<Date>(null);
   public readonly tokenExpiration$ = this.tokenExpiration.asObservable();
   public redirectUrl = new BehaviorSubject<string>(null);
 
