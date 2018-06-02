@@ -43,7 +43,7 @@ export class AppComponent implements AfterViewInit {
     let p = this.cookie.get("password");
     let t = this.cookie.get("token");
     let e = this.cookie.get("tokenExpiration");
-    let te = e ? new Date(JSON.parse(e)): null;
+    let te = e ? parseInt(e): null;
     this.auth.setUsernameAndPassword(u, p, t, te);
     this.loggedOn = t ? true : false; 
   }

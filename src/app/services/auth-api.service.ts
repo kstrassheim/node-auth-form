@@ -3,6 +3,11 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ReadKeyExpr } from '@angular/compiler';
 
+export interface ITokenResponse {
+  token:string;
+  expires:number;
+}
+
 @Injectable()
 export class AuthApiService {
 
@@ -14,11 +19,11 @@ export class AuthApiService {
   public readonly password$ = this.password.asObservable();
   protected token = new BehaviorSubject<string>(null);
   public readonly token$ = this.token.asObservable();
-  protected tokenExpiration= new BehaviorSubject<Date>(null);
+  protected tokenExpiration= new BehaviorSubject<number>(null);
   public readonly tokenExpiration$ = this.tokenExpiration.asObservable();
   public redirectUrl = new BehaviorSubject<string>(null);
 
-  public setUsernameAndPassword(username:string, password:string, token?:string, tokenExpiration?:Date) {
+  public setUsernameAndPassword(username:string, password:string, token?:string, tokenExpiration?:number) {
     this.username.next(username);
     this.password.next(password);
     if (token) this.token.next(token);
@@ -31,38 +36,53 @@ export class AuthApiService {
     this.tokenExpiration.next(null);
   }
 
-  public getToken() {
-    if (this.token.getValue() && new Date() < this.tokenExpiration.getValue()){
+  public async getToken() {
+    try 
+    {
+      if (!this.token.getValue() || !this.tokenExpiration.getValue() || (Date.now() > this.tokenExpiration.getValue())) {
+        await this.login();
+      }
+        
       return Promise.resolve(this.token.getValue());
     }
-    else {
-      return this.login();
+    catch(err){
+      return Promise.reject(err);
     }
   }
 
-  public login() {
-      return new Promise((resolve, reject) => {
-          Observable.ajax({
-            url: AuthApiService.url,
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: {
-              grant_type: 'password',
-              username: this.username.getValue(),
-              password: this.password.getValue(),
-              client_id: "angular",
-              client_secret: "angular"
-            }
-          }).subscribe((data) => { 
-            this.tokenExpiration.next(Date.now() + data.response.expires_in);
-            this.token.next(data.response.access_token);
-            resolve(data.response.access_token);
-          }, err => {
-            this.logout();
-            reject(err);
-        });
-      });
+  public async login():Promise<void> {
+    try {
+      let data = await this.sendLogin(this.username.getValue(), this.password.getValue());
+      this.tokenExpiration.next((Date.now() + data.expires));
+      this.token.next(data.token);
+      return Promise.resolve();
+    }
+    catch(err) {
+      this.logout();
+      return Promise.reject(err);
+    }
+  }
+
+  protected sendLogin(username:string, password:string):Promise<ITokenResponse> {
+    return new Promise((resolve, reject) => {
+      Observable.ajax({
+        url: AuthApiService.url,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: {
+          grant_type: 'password',
+          username: username,
+          password: password,
+          client_id: "angular",
+          client_secret: "angular"
+        }
+      }).subscribe((data) => { 
+        resolve(<ITokenResponse>{token:data.response.access_token, expires: parseInt(data.response.expires_in)});
+      }, err => {
+        reject(err);
+    });
+  });
   }
 }

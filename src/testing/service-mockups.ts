@@ -1,14 +1,29 @@
-import { AuthApiService } from '../app/services/auth-api.service';
+import { AuthApiService, ITokenResponse } from '../app/services/auth-api.service';
+export var exampleToken = "1234567890";
+export var exampleExpires = 3600;
+export var exampleUsername = "Mockuser";
+export var examplePassword = "Mockpassword";
+export var testCaseError = 'Test case error';
+export var exampleLoginResult = <ITokenResponse>{token:exampleToken, expires: exampleExpires};
 
-export class AuthApiServiceMock extends AuthApiService {
+export abstract class AuthApiServiceMock extends AuthApiService {
+  public getCurrentToken() { return this.token.getValue(); }
+  public getCurrentTokenExpiration() { return this.tokenExpiration.getValue(); }
+  public getCurrentUsername() { return this.username.getValue(); }
+  public getCurrentPassword() {  return this.password.getValue(); }
+  public setCurrentTokenExpiration(expiration:number) { this.tokenExpiration.next(expiration); }
+}
 
-    public login() {
-        return new Promise((resolve, reject) => {
-          let token = "1234567890";
-          let expires:any = 3600;
-          this.tokenExpiration.next(Date.now() + expires);
-          this.token.next(token);
-          resolve()
-        });
-    }
+export class AuthApiServiceMockSuccess extends AuthApiServiceMock {
+  protected sendLogin(username:string, password:string):Promise<ITokenResponse> {
+    return Promise.resolve(exampleLoginResult);
   }
+}
+
+export class AuthApiServiceMockFail extends AuthApiServiceMock {
+  protected sendLogin(username:string, password:string):Promise<ITokenResponse> {
+    return new Promise((resolve, reject) => {
+      reject(new Error('Test case error'))
+    });
+  }
+}

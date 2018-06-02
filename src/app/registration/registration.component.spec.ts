@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { AuthApiServiceMock } from '../../testing/service-mockups';
+import { AuthApiServiceMockSuccess } from '../../testing/service-mockups';
 import { AuthApiService } from '../services/auth-api.service';
 import { LoggerService } from '../services/logger.service';
 import { RegistrationComponent } from './registration.component';
@@ -14,7 +14,7 @@ describe('RegistrationComponent', () => {
       declarations: [ RegistrationComponent ],
       imports:[FormsModule],
       providers:    [ 
-        {provide: AuthApiService, useValue: new AuthApiServiceMock() },
+        {provide: AuthApiService, useValue: new AuthApiServiceMockSuccess() },
         {provide: LoggerService, useValue: new LoggerService() }
       ]
     })

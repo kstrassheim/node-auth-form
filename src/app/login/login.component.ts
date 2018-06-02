@@ -23,8 +23,8 @@ export class LoginComponent implements OnInit {
     else {
       try {
         this.auth.setUsernameAndPassword(this.username, this.password);
-        let t = await this.auth.login();
-        this.log.logInfo(`Login successfull, Token: ${t}`);
+        await this.auth.login();
+        this.log.logInfo(`Login successfull`);
         this.reset();
         // if url is set navigate to it
         let url = this.auth.redirectUrl.getValue();
