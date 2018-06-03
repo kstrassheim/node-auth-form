@@ -51,7 +51,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   saveRedirectUrlFromQueryParameters() {
     let sp = window.location.href.split('?');
-    if (sp.length > 0) {
+    if (sp.length > 1) {
       sp = sp[1].split('&');
       if (sp.length > 0) {
         sp = sp.filter((s) => s.toLowerCase().startsWith('redirecturl='));
