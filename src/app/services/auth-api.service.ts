@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Subject, Observable } from 'rxjs';
 import { ReadKeyExpr } from '@angular/compiler';
 
 export interface ITokenResponse {
@@ -21,7 +21,9 @@ export class AuthApiService {
   public readonly token$ = this.token.asObservable();
   protected tokenExpiration= new BehaviorSubject<number>(null);
   public readonly tokenExpiration$ = this.tokenExpiration.asObservable();
-  public redirectUrl = new BehaviorSubject<string>(null);
+  //public redirectUrl = new BehaviorSubject<string>(null);
+
+  public readonly onLoggedIn = new Subject<string>();
 
   public setUsernameAndPassword(username:string, password:string, token?:string, tokenExpiration?:number) {
     this.username.next(username);
@@ -55,6 +57,7 @@ export class AuthApiService {
       let data = await this.sendLogin(this.username.getValue(), this.password.getValue());
       this.tokenExpiration.next((Date.now() + data.expires));
       this.token.next(data.token);
+      this.onLoggedIn.next(data.token);
       return Promise.resolve();
     }
     catch(err) {

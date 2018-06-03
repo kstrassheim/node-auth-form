@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { AuthApiService } from '../services/auth-api.service';
 import { LoggerService } from '../services/logger.service';
 
@@ -13,8 +12,8 @@ export class LoginComponent implements OnInit {
   public username = "";
   public password = ""; 
 
-  constructor(public auth:AuthApiService, public log:LoggerService, private router: Router) {
-    
+  constructor(public auth:AuthApiService, public log:LoggerService) {
+
   }
 
   public async login() {
@@ -26,10 +25,6 @@ export class LoginComponent implements OnInit {
         await this.auth.login();
         this.log.logInfo(`Login successfull`);
         this.reset();
-        // if url is set navigate to it
-        let url = this.auth.redirectUrl.getValue();
-        if (url)
-          this.router.navigateByUrl(url);
       }
       catch(err) {
         this.log.logError(err);

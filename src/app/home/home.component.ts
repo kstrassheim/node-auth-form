@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core'
 
 @Component({
   selector: 'app-home',
@@ -7,9 +7,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  constructor() { }
-
-  ngOnInit() {
+  constructor() { 
+    // const snapshot: RouterStateSnapshot = router.routerState.snapshot;
+    // var p = snapshot.root.queryParams["redirectUrl"];
+    // console.log(p);  // <-- hope it helps
   }
 
+  ngOnInit() {
+    
+  }
 }

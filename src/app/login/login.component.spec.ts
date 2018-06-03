@@ -31,4 +31,8 @@ describe('LoginComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  // test for calling auth login with correct params
+
+  // test for resetting form
 });
