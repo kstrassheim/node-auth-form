@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AuthApiServiceMockSuccess } from '../testing/service-mockups';
 import { AuthApiService } from './services/auth-api.service';
 import { LoggerService } from './services/logger.service';
-import { CookieService } from 'angular2-cookie/core';
+import { CookieService } from 'ngx-cookie';
 
 
 let cookieServiceStub: Partial<CookieService>;
@@ -35,12 +35,12 @@ describe('AppComponent', () => {
   it(`should have as title 'app'`, async(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('Usermanagement');
+    expect(app.title).toEqual('Node Auth Form');
   }));
   it('should render title in a h1 tag', async(() => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('a.navbar-brand').textContent).toContain('Usermanagement');
+    expect(compiled.querySelector('a.navbar-brand').textContent).toContain('Node Auth Form');
   }));
 });

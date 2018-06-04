@@ -10,7 +10,7 @@ import { HomeComponent } from './home/home.component';
 import { CollapseModule, BsDropdownModule  } from 'ngx-bootstrap';
 import { AuthApiService } from './services/auth-api.service';
 import { LoggerService } from './services/logger.service';
-import { CookieService } from 'angular2-cookie/services/cookies.service';
+import { CookieModule } from 'ngx-cookie';
 
 
 @NgModule({
@@ -25,8 +25,9 @@ import { CookieService } from 'angular2-cookie/services/cookies.service';
     FormsModule,
     CollapseModule.forRoot(), BsDropdownModule.forRoot(),
     AppRoutingModule,
+    CookieModule.forRoot()
   ],
-  providers: [AuthApiService, LoggerService, CookieService],
+  providers: [AuthApiService, LoggerService/*, CookieService*/],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

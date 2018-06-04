@@ -3,7 +3,7 @@ import { Router, NavigationStart, NavigationCancel, NavigationEnd } from '@angul
 import { URLSearchParams } from "@angular/http";
 import { AuthApiService } from './services/auth-api.service';
 import { LoggerService } from './services/logger.service';
-import { CookieService } from 'angular2-cookie/core';
+import { CookieService } from 'ngx-cookie';
 import { decode } from '@angular/router/src/url_tree';
 
 @Component({
