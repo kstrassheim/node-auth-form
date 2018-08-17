@@ -86,6 +86,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     let te = e ? parseInt(e): null;
     this.auth.setUsernameAndPassword(u, p, t, te);
     this.loggedOn = t ? true : false; 
+    this.onLoggedIn(t);
   }
 
   ngOnInit() {
