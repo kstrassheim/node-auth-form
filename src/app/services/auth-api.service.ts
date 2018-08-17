@@ -26,10 +26,12 @@ export class AuthApiService {
   public readonly onLoggedIn = new Subject<string>();
 
   public setUsernameAndPassword(username:string, password:string, token?:string, tokenExpiration?:number) {
+    console.log("set username password");
     this.username.next(username);
     this.password.next(password);
     if (token) this.token.next(token);
     if (tokenExpiration) this.tokenExpiration.next(tokenExpiration);
+    console.log("try call on logged on subject");
     if (token) this.onLoggedIn.next(token);
   }
 
