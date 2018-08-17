@@ -30,6 +30,7 @@ export class AuthApiService {
     this.password.next(password);
     if (token) this.token.next(token);
     if (tokenExpiration) this.tokenExpiration.next(tokenExpiration);
+    if (token) this.onLoggedIn.next(token);
   }
 
   public logout() {
