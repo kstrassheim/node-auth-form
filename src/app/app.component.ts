@@ -68,6 +68,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   onLoggedIn(token:string) {
     if ( this.redirectUrl) {
       if (this.redirectUrl && !this.redirectUrl.toLowerCase().startsWith('http')) {
+        console.log(`Internal redirect to ${decodeURIComponent(this.redirectUrl.replace('{0}', token))}`);
         this.router.navigateByUrl(this.redirectUrl);
         this.redirectUrl = null;
       }
