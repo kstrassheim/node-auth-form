@@ -22,31 +22,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   private redirectUrl:string = null;
 
   constructor(private router: Router, public auth: AuthApiService, public log: LoggerService, private cookie:CookieService) {
-    this.saveRedirectUrlFromQueryParameters();
-
-    // get redirect url from params and save it
-    auth.onLoggedIn.subscribe(this.onLoggedIn.bind(this));
-    this.loadAuthDataFromCookie();
-
-    auth.token$.subscribe(t => {
-      this.loggedOn = t ? true : false; 
-      cookie.put("token", t);
-    });
-
-    auth.username$.subscribe(u=>{
-      this.username = u; 
-      cookie.put("username", u);
-    });
-
-    auth.password$.subscribe(p=>{
-      cookie.put("password", p);
-    });
-
-    auth.tokenExpiration$.subscribe(e=>{
-      let es = JSON.stringify(e);
-      cookie.put("tokenExpiration", JSON.stringify(e));
-    });
-
+    
   }
 
   saveRedirectUrlFromQueryParameters() {
@@ -96,7 +72,31 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-   
+    this.saveRedirectUrlFromQueryParameters();
+
+    // get redirect url from params and save it
+    this.auth.onLoggedIn.subscribe(this.onLoggedIn.bind(this));
+    this.loadAuthDataFromCookie();
+
+    this.auth.token$.subscribe(t => {
+      this.loggedOn = t ? true : false; 
+      this.cookie.put("token", t);
+    });
+
+    this.auth.username$.subscribe(u=>{
+      this.username = u; 
+      this.cookie.put("username", u);
+    });
+
+    this.auth.password$.subscribe(p=>{
+      this.cookie.put("password", p);
+    });
+
+    this.auth.tokenExpiration$.subscribe(e=>{
+      let es = JSON.stringify(e);
+      this.cookie.put("tokenExpiration", JSON.stringify(e));
+    });
+
   }
 
   ngAfterViewInit() {
