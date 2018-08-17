@@ -50,6 +50,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   saveRedirectUrlFromQueryParameters() {
+    console.log(`try get redirect url`);
     let sp = window.location.href.split('?');
     if (sp.length > 1) {
       sp = sp[1].split('&');
@@ -59,6 +60,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           sp = sp[0].split('=');
           if (sp.length > 1) {
             this.redirectUrl = decodeURIComponent(sp[1]);
+            console.log(`Saved redirect url ${this.redirectUrl}`);
           } 
         }
       }
@@ -68,24 +70,27 @@ export class AppComponent implements OnInit, AfterViewInit {
   onLoggedIn(token:string) {
     if ( this.redirectUrl) {
       if (this.redirectUrl && !this.redirectUrl.toLowerCase().startsWith('http')) {
-        console.log(`Internal redirect to ${decodeURIComponent(this.redirectUrl.replace('{0}', token))}`);
+        console.log(`Internal redirect to ${this.redirectUrl}`);
         this.router.navigateByUrl(this.redirectUrl);
         this.redirectUrl = null;
       }
       else {
         // navigate back to original site
-        console.log(`Redirecting to ${decodeURIComponent(this.redirectUrl.replace('{0}', token))}`);
+        console.log(`Redirecting to ${this.redirectUrl.replace('{0}', token)}`);
         window.location.href = this.redirectUrl.replace('{0}', token);
       }
     }
   }
 
   loadAuthDataFromCookie() {
+    console.log(`Load auth data from cookie`);
     let u = this.cookie.get("username");
     let p = this.cookie.get("password");
     let t = this.cookie.get("token");
     let e = this.cookie.get("tokenExpiration");
+    console.log(`parse expiration`);
     let te = e ? parseInt(e): null;
+    console.log(`finished parse expiration`);
     this.auth.setUsernameAndPassword(u, p, t, te);
     this.loggedOn = t ? true : false; 
   }
