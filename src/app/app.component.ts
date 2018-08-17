@@ -73,6 +73,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       }
       else {
         // navigate back to original site
+        console.log(`Redirecting to ${ decodeURIComponent(sp[1])}`);
         window.location.href = this.redirectUrl.replace('{0}', token);
       }
     }
