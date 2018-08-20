@@ -18,15 +18,39 @@ export class AppComponent implements OnInit, AfterViewInit {
   public loggedOn = false;
   public username = '';
   public static publicRoutes = ['/registration', '/login'];
-
   private redirectUrl:string = null;
 
-  constructor(private router: Router, public auth: AuthApiService, public log: LoggerService, private cookie:CookieService) {
-    
+  constructor(private router: Router, public auth: AuthApiService, public log: LoggerService, private cookie:CookieService) {}
+
+  ngOnInit() {
+    this.saveRedirectUrlFromQueryParameters();
+    this.auth.token$.subscribe(this.onLoggedIn.bind(this));
+
+    // get token from cookie
+    this.auth.setTokenIfValid(this.cookie.get("token"));
+  }
+
+  ngAfterViewInit() {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationStart && !this.loading) {
+          this.loading = true;
+          let pureUrl = event.url.split('?')[0];
+          // check login status and redirect to login page
+          if (!AppComponent.publicRoutes.find(o => pureUrl == o) && !this.loggedOn) {
+            if (!this.redirectUrl) {
+              this.redirectUrl = event.url;
+            }
+            //this.auth.redirectUrl.next(event.url);
+            this.router.navigateByUrl('/login');
+          }
+      }
+      else if (event instanceof NavigationEnd || event instanceof NavigationCancel) {
+        this.loading = false;
+      }
+    });
   }
 
   saveRedirectUrlFromQueryParameters() {
-    console.log(`try get redirect url`);
     let sp = window.location.href.split('?');
     if (sp.length > 1) {
       sp = sp[1].split('&');
@@ -44,7 +68,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   onLoggedIn(token:string) {
-    if ( this.redirectUrl) {
+    this.cookie.put("token", token);
+    this.loggedOn = token ? true : false; 
+    if (this.redirectUrl) {
       if (this.redirectUrl && !this.redirectUrl.toLowerCase().startsWith('http')) {
         console.log(`Internal redirect to ${this.redirectUrl}`);
         this.router.navigateByUrl(this.redirectUrl);
@@ -56,70 +82,5 @@ export class AppComponent implements OnInit, AfterViewInit {
         window.location.href = this.redirectUrl.replace('{0}', token);
       }
     }
-  }
-
-  loadAuthDataFromCookie() {
-    console.log(`Load auth data from cookie`);
-    let u = this.cookie.get("username");
-    let p = this.cookie.get("password");
-    let t = this.cookie.get("token");
-    let e = this.cookie.get("tokenExpiration");
-    console.log(`parse expiration`);
-    let te = e ? parseInt(e): null;
-    console.log(`finished parse expiration`);
-    this.auth.setUsernameAndPassword(u, p, t, te);
-    this.loggedOn = t ? true : false; 
-  }
-
-  ngOnInit() {
-    this.saveRedirectUrlFromQueryParameters();
-
-    // get redirect url from params and save it
-    this.auth.onLoggedIn.subscribe(this.onLoggedIn.bind(this));
-    this.loadAuthDataFromCookie();
-
-    this.auth.token$.subscribe(t => {
-      this.loggedOn = t ? true : false; 
-      this.cookie.put("token", t);
-    });
-
-    this.auth.username$.subscribe(u=>{
-      this.username = u; 
-      this.cookie.put("username", u);
-    });
-
-    this.auth.password$.subscribe(p=>{
-      this.cookie.put("password", p);
-    });
-
-    this.auth.tokenExpiration$.subscribe(e=>{
-      let es = JSON.stringify(e);
-      this.cookie.put("tokenExpiration", JSON.stringify(e));
-    });
-
-  }
-
-  ngAfterViewInit() {
-    this.router.events
-        .subscribe((event) => {
-            if (event instanceof NavigationStart && !this.loading) {
-                this.loading = true;
-                let pureUrl = event.url.split('?')[0];
-                // check login status and redirect to login page
-                if (!AppComponent.publicRoutes.find(o => pureUrl == o) && !this.loggedOn) {
-                  if (!this.redirectUrl) {
-                    this.redirectUrl = event.url;
-                  }
-                  //this.auth.redirectUrl.next(event.url);
-                  this.router.navigateByUrl('/login');
-                }
-            }
-            else if (
-                event instanceof NavigationEnd || 
-                event instanceof NavigationCancel
-                ) {
-                this.loading = false;
-            }
-        });
   }
 }

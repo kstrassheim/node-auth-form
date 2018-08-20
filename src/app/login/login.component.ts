@@ -21,10 +21,12 @@ export class LoginComponent implements OnInit {
     else if (!this.password) alert("Password missing");
     else {
       try {
-        this.auth.setUsernameAndPassword(this.username, this.password);
-        await this.auth.login();
-        this.log.logInfo(`Login successfull`);
-        this.reset();
+        this.auth.token$.subscribe(t=> {
+          this.log.logInfo(`Login successfull`);
+          this.reset();
+        })
+
+        await this.auth.login(this.username, this.password);
       }
       catch(err) {
         this.log.logError(err);
