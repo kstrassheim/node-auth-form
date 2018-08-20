@@ -50,8 +50,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     });
   }
 
-  saveRedirectUrlFromQueryParameters() {
-    let sp = window.location.href.split('?');
+  protected getLocation() { return window.location.href; }
+
+  protected setLocation(url:string) { window.location.href = url; }
+
+  protected saveRedirectUrlFromQueryParameters() {
+    let sp = this.getLocation().split('?');
     if (sp.length > 1) {
       sp = sp[1].split('&');
       if (sp.length > 0) {
@@ -60,26 +64,23 @@ export class AppComponent implements OnInit, AfterViewInit {
           sp = sp[0].split('=');
           if (sp.length > 1) {
             this.redirectUrl = decodeURIComponent(sp[1]);
-            console.log(`Saved redirect url ${this.redirectUrl}`);
           } 
         }
       }
     }
   }
 
-  onLoggedIn(token:string) {
+  protected onLoggedIn(token:string) {
     this.cookie.put("token", token);
     this.loggedOn = token ? true : false; 
     if (this.redirectUrl) {
       if (this.redirectUrl && !this.redirectUrl.toLowerCase().startsWith('http')) {
-        console.log(`Internal redirect to ${this.redirectUrl}`);
         this.router.navigateByUrl(this.redirectUrl);
         this.redirectUrl = null;
       }
       else {
         // navigate back to original site
-        console.log(`Redirecting to ${this.redirectUrl.replace('{0}', token)}`);
-        window.location.href = this.redirectUrl.replace('{0}', token);
+        this.setLocation(this.redirectUrl.replace('{0}', token));
       }
     }
   }
