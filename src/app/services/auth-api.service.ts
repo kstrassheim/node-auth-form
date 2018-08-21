@@ -7,9 +7,7 @@ import { ReadKeyExpr } from '@angular/compiler';
 export class AuthApiService {
 
   private static baseUrl = "https://nodeauthweb.azurewebsites.net/auth";
-
-  protected token = new BehaviorSubject<string>(null);
-  public readonly token$ = this.token.asObservable();
+  public onLoggedIn = new Subject<string>();
 
   protected errorLog(err:string) { 
     console.error(err); 
@@ -57,12 +55,11 @@ export class AuthApiService {
     });
   }
 
-  public logout() { this.token.next(null); }
-
   public async setTokenIfValid(token) {
     try {
+      if (!token) return;
       const valid = await this.sendTokenValidation(token);
-      if (valid) this.token.next(token);
+      if (valid) this.onLoggedIn.next(token);
     }
     catch(err) {
        this.errorLog(err);

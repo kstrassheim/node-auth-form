@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit {
     else if (!this.password) alert("Password missing");
     else {
       try {
-        this.auth.token$.subscribe(t=> {
+        this.auth.onLoggedIn.subscribe(t=> {
           this.log.logInfo(`Login successfull`);
           this.reset();
         })

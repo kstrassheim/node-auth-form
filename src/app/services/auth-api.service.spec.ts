@@ -15,15 +15,17 @@ describe('AuthApiService',  () => {
 
   it('setTokenIfValid success path', (done) => inject([AuthApiServiceMockSuccess], async(service: AuthApiServiceMock) => {
     try {
-        spyOn((<any>service).token, "next").and.callThrough();
+        spyOn((<any>service).onLoggedIn, "next").and.callFake(function(token:string) {
+          expect(token).toBeDefined();
+          expect(token).toMatch(exampleToken);
+        });
         spyOn<any>(service, "errorLog").and.callThrough();
        
         await service.setTokenIfValid(exampleToken);
         expect((<any>service).errorLog).toHaveBeenCalledTimes(0);
-        expect((<any>service).token.next).toHaveBeenCalledTimes(1);
-        let t = service.getCurrentToken();
-        expect(t).toBeDefined();
-        expect(t).toMatch(exampleToken);
+        expect((<any>service).onLoggedIn.next).toHaveBeenCalledTimes(1);
+        //let t = service.getCurrentToken();
+        
         done();
       }
       catch(err) {
@@ -32,9 +34,29 @@ describe('AuthApiService',  () => {
     })()
   );
 
+  it('setTokenIfValid null path', (done) => inject([AuthApiServiceMockFail], async(service: AuthApiServiceMock) => {
+    try {
+      spyOn((<any>service).onLoggedIn, "next").and.callThrough();
+      spyOn<any>(service, "errorLog").and.callThrough();
+      try {
+        await service.setTokenIfValid(null);
+      }
+      catch(err) {
+        expect(err).toMatch(testCaseError);
+      }
+      expect((<any>service).errorLog).toHaveBeenCalledTimes(0);
+      expect((<any>service).onLoggedIn.next).toHaveBeenCalledTimes(0);
+      done();
+    }
+    catch(err) {
+      done.fail(err);
+    }
+  })()
+);
+
   it('setTokenIfValid fail path', (done) => inject([AuthApiServiceMockFail], async(service: AuthApiServiceMock) => {
       try {
-        spyOn((<any>service).token, "next").and.callThrough();
+        spyOn((<any>service).onLoggedIn, "next").and.callThrough();
         spyOn<any>(service, "errorLog").and.callThrough();
         try {
           await service.setTokenIfValid(exampleToken);
@@ -43,9 +65,7 @@ describe('AuthApiService',  () => {
           expect(err).toMatch(testCaseError);
         }
         expect((<any>service).errorLog).toHaveBeenCalledTimes(1);
-        expect((<any>service).token.next).toHaveBeenCalledTimes(0);
-        let t = service.getCurrentToken();
-        expect(t).toBeNull();
+        expect((<any>service).onLoggedIn.next).toHaveBeenCalledTimes(0);
         done();
       }
       catch(err) {
@@ -57,15 +77,15 @@ describe('AuthApiService',  () => {
   it('login success path', (done) => inject([AuthApiServiceMockSuccess], async(service: AuthApiServiceMock) => {
     try {
         spyOn(service, "setTokenIfValid").and.callThrough();
-        spyOn((<any>service).token, "next").and.callThrough();
+        spyOn((<any>service).onLoggedIn, "next").and.callFake(function(token:string) {
+          expect(token).toBeDefined();
+          expect(token).toMatch(exampleToken);
+        });
         spyOn<any>(service, "errorLog").and.callThrough();
         await service.login(exampleUsername, examplePassword);
         expect((<any>service).errorLog).toHaveBeenCalledTimes(0);
         expect(service.setTokenIfValid).toHaveBeenCalledTimes(1);
-        expect((<any>service).token.next).toHaveBeenCalledTimes(1);
-        let t = service.getCurrentToken();
-        expect(t).toBeDefined();
-        expect(t).toMatch(exampleToken);
+        expect((<any>service).onLoggedIn.next).toHaveBeenCalledTimes(1);
         done();
       }
       catch(err) {
@@ -77,7 +97,7 @@ describe('AuthApiService',  () => {
   it('login fail path', (done) => inject([AuthApiServiceMockFail], async(service: AuthApiServiceMock) => {
       try {
         spyOn(service, "setTokenIfValid").and.callThrough();
-        spyOn((<any>service).token, "next").and.callThrough();
+        spyOn((<any>service).onLoggedIn, "next").and.callThrough();
         spyOn<any>(service, "errorLog").and.callThrough();
         try {
           await service.login(exampleUsername, examplePassword);
@@ -87,9 +107,7 @@ describe('AuthApiService',  () => {
         }
         expect((<any>service).errorLog).toHaveBeenCalledTimes(1);
         expect(service.setTokenIfValid).toHaveBeenCalledTimes(0);
-        expect((<any>service).token.next).toHaveBeenCalledTimes(0);
-        let t = service.getCurrentToken();
-        expect(t).toBeNull();
+        expect((<any>service).onLoggedIn.next).toHaveBeenCalledTimes(0);
         done();
       }
       catch(err) {

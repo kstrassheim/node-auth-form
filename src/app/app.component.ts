@@ -24,10 +24,10 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.saveRedirectUrlFromQueryParameters();
-    this.auth.token$.subscribe(this.onLoggedIn.bind(this));
+    this.auth.onLoggedIn.subscribe(this.onLoggedIn.bind(this));
 
     // get token from cookie
-    this.auth.setTokenIfValid(this.cookie.get("token"));
+    this.auth.setTokenIfValid(this.cookie.get('token'));
   }
 
   ngAfterViewInit() {
@@ -50,12 +50,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     });
   }
 
-  protected getLocation() { return window.location.href; }
+  protected getWindowLocationHref() { return window.location.href; }
 
-  protected setLocation(url:string) { window.location.href = url; }
+  protected setWindowLocationHref(url:string) { window.location.href = url; }
 
   protected saveRedirectUrlFromQueryParameters() {
-    let sp = this.getLocation().split('?');
+    let sp = this.getWindowLocationHref().split('?');
     if (sp.length > 1) {
       sp = sp[1].split('&');
       if (sp.length > 0) {
@@ -80,7 +80,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       }
       else {
         // navigate back to original site
-        this.setLocation(this.redirectUrl.replace('{0}', token));
+        this.setWindowLocationHref(this.redirectUrl.replace('{0}', token));
       }
     }
   }

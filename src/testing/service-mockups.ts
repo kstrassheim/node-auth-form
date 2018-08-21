@@ -6,9 +6,6 @@ export var examplePassword = "Mockpassword";
 export var testCaseError = 'Test case error';
 
 export abstract class AuthApiServiceMock extends AuthApiService {
-  public getCurrentToken() { 
-    return this.token.getValue(); 
-  }
   protected errorLog(err:string) { };
 }
 
@@ -20,7 +17,6 @@ export class AuthApiServiceMockSuccess extends AuthApiServiceMock {
   protected async sendLogin(username:string, password:string) {
     return new Promise<string>(resolve => resolve(exampleToken));
   }
-  
 }
 
 export class AuthApiServiceMockFail extends AuthApiServiceMock {
