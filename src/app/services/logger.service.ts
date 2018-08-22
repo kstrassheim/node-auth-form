@@ -9,7 +9,21 @@ export class LoggerService {
   public logInfo(message:string, isPublic = true) {
     console.log(message);
     if (isPublic) {
+      toastr.info(message);
+    }
+  }
+
+  public logSuccess(message:string, isPublic = true) {
+    console.log(message);
+    if (isPublic) {
       toastr.success(message);
+    }
+  }
+
+  public logWarning(message:string, isPublic = true) {
+    console.log(message);
+    if (isPublic) {
+      toastr.warning(message);
     }
   }
 

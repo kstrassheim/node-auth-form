@@ -1,11 +1,12 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { TestBed, inject, tick } from '@angular/core/testing';
 import { AuthApiService } from '../services/auth-api.service';
-import { AuthApiServiceMock, AuthApiServiceMockSuccess, AuthApiServiceMockFail, exampleToken, exampleExpires, exampleUsername, examplePassword, testCaseError } from '../../testing/service-mockups';
+import { AuthApiServiceMock, AuthApiServiceMockSuccess, AuthApiServiceMockExist, AuthApiServiceMockFail, exampleToken, exampleUsername, examplePassword, registrationSuccessStatus, registrationExistStatus, testCaseError } from '../../testing/service-mockups';
+import { async } from 'q';
 
 describe('AuthApiService',  () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [AuthApiService, AuthApiServiceMockSuccess, AuthApiServiceMockFail]
+      providers: [AuthApiService, AuthApiServiceMockSuccess, AuthApiServiceMockExist, AuthApiServiceMockFail]
     });
   });
 
@@ -40,6 +41,7 @@ describe('AuthApiService',  () => {
       spyOn<any>(service, "errorLog").and.callThrough();
       try {
         await service.setTokenIfValid(null);
+        done.fail();
       }
       catch(err) {
         expect(err).toMatch(testCaseError);
@@ -60,6 +62,7 @@ describe('AuthApiService',  () => {
         spyOn<any>(service, "errorLog").and.callThrough();
         try {
           await service.setTokenIfValid(exampleToken);
+          done.fail();
         }
         catch(err) {
           expect(err).toMatch(testCaseError);
@@ -101,6 +104,7 @@ describe('AuthApiService',  () => {
         spyOn<any>(service, "errorLog").and.callThrough();
         try {
           await service.login(exampleUsername, examplePassword);
+          done.fail();
         }
         catch(err) {
           expect(err).toMatch(testCaseError);
@@ -108,6 +112,53 @@ describe('AuthApiService',  () => {
         expect((<any>service).errorLog).toHaveBeenCalledTimes(1);
         expect(service.setTokenIfValid).toHaveBeenCalledTimes(0);
         expect((<any>service).onLoggedIn.next).toHaveBeenCalledTimes(0);
+        done();
+      }
+      catch(err) {
+        done.fail(err);
+      }
+    })()
+  );
+
+  it('register success path', (done) => inject([AuthApiServiceMockSuccess], async(service: AuthApiServiceMock) => {
+    try {
+        spyOn<any>(service, "errorLog").and.callThrough();
+        const res = await service.register(exampleUsername, examplePassword);
+        expect((<any>service).errorLog).toHaveBeenCalledTimes(0);
+        expect(res).toEqual(registrationSuccessStatus);
+        done();
+      }
+      catch(err) {
+        done.fail(err);
+      }
+    })()
+  );
+
+  it('register exist path', (done) => inject([AuthApiServiceMockExist], async(service: AuthApiServiceMock) => {
+    try {
+        spyOn<any>(service, "errorLog").and.callThrough();
+        const res = await service.register(exampleUsername, examplePassword);
+        expect((<any>service).errorLog).toHaveBeenCalledTimes(0);
+        expect(res).toEqual(registrationExistStatus);
+        done();
+      }
+      catch(err) {
+        done.fail(err);
+      }
+    })()
+  );
+
+  it('register fail path', (done) => inject([AuthApiServiceMockFail], async(service: AuthApiServiceMock) => {
+      try {
+        spyOn<any>(service, "errorLog").and.callThrough();
+        try {
+          await service.register(exampleUsername, examplePassword);
+          done.fail();
+        }
+        catch(err) {
+          expect(err).toMatch(testCaseError);
+        }
+        expect((<any>service).errorLog).toHaveBeenCalledTimes(1);
         done();
       }
       catch(err) {

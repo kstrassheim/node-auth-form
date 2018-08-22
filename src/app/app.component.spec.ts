@@ -61,7 +61,7 @@ describe('AppComponent without cookie token', () => {
     expect(app.redirectUrl).toEqual(exampleRedirectUrl);
   }));
 
-  it('redirects after logon', async(() => {
+  it('redirects after logon', fakeAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
     spyOn((<any>app), "setWindowLocationHref").and.callFake((redirectUrl:string) => {
@@ -69,6 +69,7 @@ describe('AppComponent without cookie token', () => {
     });
     app.ngOnInit();
     app.onLoggedIn(testExampleToken);
+    tick();
     expect((<any>app).setWindowLocationHref).toHaveBeenCalledTimes(1);
     
   }));

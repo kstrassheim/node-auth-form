@@ -55,24 +55,70 @@ export class AuthApiService {
     });
   }
 
-  public async setTokenIfValid(token) {
-    try {
-      if (!token) return;
-      const valid = await this.sendTokenValidation(token);
-      if (valid) this.onLoggedIn.next(token);
-    }
-    catch(err) {
-       this.errorLog(err);
-    }
+  public async setTokenIfValid(token:string) {
+    return new Promise<void>(async (resolve, reject) => {
+      try {
+        if (token) { 
+          const valid = await this.sendTokenValidation(token);
+          if (valid) this.onLoggedIn.next(token);
+        }
+        resolve();
+      }
+      catch(err) {
+        this.errorLog(err);
+        reject(err);
+      }
+    });
   }
 
   public async login(username:string, password:string) {
-    try {
-      const token = await this.sendLogin(username, password);
-      await this.setTokenIfValid(token);
-    }
-    catch(err) {
-       this.errorLog(err);
-    }
+    return new Promise<void>(async (resolve, reject) => {
+      try {
+        const token = await this.sendLogin(username, password);
+        await this.setTokenIfValid(token);
+        resolve();
+      }
+      catch(err) {
+        this.errorLog(err);
+        reject(err);
+      }
+    });
+  }
+
+  protected async sendRegistration(username:string, password:string) {
+    return new Promise<number>((resolve, reject) => {
+      Observable.ajax({
+        url: `${AuthApiService.baseUrl}/registerUser`,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: {
+          body: {
+            username: username,
+            password: password
+          }
+        }
+      }).subscribe((data) => {
+        const status = parseInt(data.response.status); 
+        if (status == 0) reject(data.response.error);
+        else resolve(status);
+      }, (err) => {
+        reject(err);
+      });
+    });
+  }
+
+  public async register(username:string, password:string) {
+    return new Promise<number>(async (resolve, reject) => {
+      try {
+        const res = await this.sendRegistration(username, password);
+        resolve(res)
+      }
+      catch(err) {
+        this.errorLog(err);
+        reject(err);
+      }
+    });
   }
 }
