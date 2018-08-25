@@ -36,25 +36,34 @@ describe('AuthApiService',  () => {
   );
 
   it('setTokenIfValid null path', (done) => inject([AuthApiServiceMockFail], async(service: AuthApiServiceMock) => {
-    try {
-      spyOn((<any>service).onLoggedIn, "next").and.callThrough();
-      spyOn<any>(service, "errorLog").and.callThrough();
       try {
+        spyOn((<any>service).onLoggedIn, "next").and.callThrough();
+        spyOn<any>(service, "errorLog").and.callThrough();
         await service.setTokenIfValid(null);
-        done.fail();
+        expect((<any>service).errorLog).toHaveBeenCalledTimes(0);
+        expect((<any>service).onLoggedIn.next).toHaveBeenCalledTimes(0);
+        done();
       }
       catch(err) {
-        expect(err).toMatch(testCaseError);
+        done.fail(err);
       }
-      expect((<any>service).errorLog).toHaveBeenCalledTimes(0);
-      expect((<any>service).onLoggedIn.next).toHaveBeenCalledTimes(0);
-      done();
-    }
-    catch(err) {
-      done.fail(err);
-    }
-  })()
-);
+    })()
+  );
+
+  it('setTokenIfValid undefined path', (done) => inject([AuthApiServiceMockFail], async(service: AuthApiServiceMock) => {
+      try {
+        spyOn((<any>service).onLoggedIn, "next").and.callThrough();
+        spyOn<any>(service, "errorLog").and.callThrough();
+        await service.setTokenIfValid(undefined);
+        expect((<any>service).errorLog).toHaveBeenCalledTimes(0);
+        expect((<any>service).onLoggedIn.next).toHaveBeenCalledTimes(0);
+        done();
+      }
+      catch(err) {
+        done.fail(err);
+      }
+    })()
+  );  
 
   it('setTokenIfValid fail path', (done) => inject([AuthApiServiceMockFail], async(service: AuthApiServiceMock) => {
       try {
