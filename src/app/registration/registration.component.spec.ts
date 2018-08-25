@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick, flush } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { AuthApiServiceMockSuccess } from '../../testing/service-mockups';
 import { AuthApiService } from '../services/auth-api.service';
@@ -13,7 +13,7 @@ describe('RegistrationComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ RegistrationComponent ],
       imports:[FormsModule],
-      providers:    [ 
+      providers: [ 
         {provide: AuthApiService, useValue: new AuthApiServiceMockSuccess() },
         {provide: LoggerService, useValue: new LoggerService() }
       ]
@@ -27,7 +27,14 @@ describe('RegistrationComponent', () => {
     fixture.detectChanges();
   });
 
-  // it('should create', () => {
-  //   expect(component).toBeTruthy();
-  // });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('validation message called', () => {
+    spyOn(component.log, 'logWarning').and.callThrough();
+    component.save();
+    expect(component.log.logWarning).toHaveBeenCalled();
+  });
+
 });
