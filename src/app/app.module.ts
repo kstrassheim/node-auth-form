@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing/app-routing.module';
 
@@ -23,6 +24,7 @@ import { CookieModule } from 'ngx-cookie';
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     CollapseModule.forRoot(), BsDropdownModule.forRoot(),
     AppRoutingModule,
     CookieModule.forRoot()
