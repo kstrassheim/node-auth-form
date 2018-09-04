@@ -7,12 +7,12 @@ export const PasswordsMatchValidator = (fg: FormGroup): ValidatorFn => (control:
   const password = fg.get('password').value;
   const repeat = fg.get('repeat').value;
   if(password===repeat) {
-      return null;
+      return { passwordsMatchValidator: { valid: true } };
   }
   return { passwordsMatchValidator: { valid: false } };
 }
 @Directive({  
-    selector: '[PasswordsMatchValidator][ngModel]',  
+    selector: '[passwordsMatchValidator][ngModel]',  
     providers: [{ provide: NG_VALIDATORS,useExisting: NG_VALIDATORS, multi: true } ]  
 })
 export class PasswordsMatchDirective {}
