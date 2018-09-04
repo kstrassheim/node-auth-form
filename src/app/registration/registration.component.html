@@ -29,9 +29,7 @@
         name="repeat" validateEqual="password" #repeatModel="ngModel" [ngClass]="{ 'is-invalid': f.submitted && repeatModel.invalid }" />
       <div *ngIf="f.submitted && repeatModel.invalid" class="invalid-feedback">
         <div *ngIf="repeatModel.errors.required">Please repeat the password</div>
-        <div *ngIf="repeatModel.errors.validateEqual">
-          The passwords must match
-        </div>
+        <div *ngIf="repeatModel.errors.validateEqual">The passwords must match</div>
       </div>
   
     </div>
