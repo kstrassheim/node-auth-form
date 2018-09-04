@@ -8,25 +8,11 @@ import { Validator, AbstractControl, NG_VALIDATORS } from '@angular/forms';
     ]
 })
 export class EqualValidator implements Validator {
-    constructor( @Attribute('validateEqual') public validateEqual: string) {
+    constructor( @Attribute('validateEqual') public validateEqual: string) {  }
 
-    }
-
-
-    validate(c: AbstractControl): { [key: string]: any } {
-        // self value
-        let v = c.value;
-
-        // control vlaue
-        let e = c.root.get(this.validateEqual);
-
-        // value not equal
-        if (e && v !== e.value) {
-          return {
-            validateEqual: true
-          }
-        }
-
+    validate(control: AbstractControl): { [key: string]: any } {
+        const v = control.value, e = control.root.get(this.validateEqual);
+        if (e && v !== e.value) return {validateEqual: true }
         return null;
     }
 }

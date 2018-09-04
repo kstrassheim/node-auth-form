@@ -30,7 +30,7 @@ import { CookieModule } from 'ngx-cookie';
     AppRoutingModule,
     CookieModule.forRoot()
   ],
-  providers: [AuthApiService, LoggerService/*, CookieService*/],
+  providers: [AuthApiService, LoggerService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
