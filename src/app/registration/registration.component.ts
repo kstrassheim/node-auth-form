@@ -1,14 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Directive } from '@angular/core';
 import { AuthApiService } from '../services/auth-api.service';
 import { LoggerService } from '../services/logger.service';
-import { ValidatorFn, AbstractControl } from "@angular/forms";
+import { ValidatorFn, AbstractControl, FormGroup, NG_VALIDATORS } from "@angular/forms";
 
-export const matchValidator = (field1, field2): ValidatorFn => (control: AbstractControl) => {
-  if(control.get(field1).value===control.get(field2).value) {
+export const PasswordsMatchValidator = (fg: FormGroup): ValidatorFn => (control: AbstractControl) => {
+  const password = fg.get('password').value;
+  const repeat = fg.get('repeat').value;
+  if(password===repeat) {
       return null;
   }
   return { matchValidator: { valid: false } };
 }
+@Directive({  
+  selector: '[PasswordsMatchValidator][ngModel]',  
+  providers: [  
+   {  
+    provide: NG_VALIDATORS,  
+    useExisting: NG_VALIDATORS,  
+    multi: true  
+   }  
+  ]  
+ })
 
 @Component({
   selector: 'app-registration',

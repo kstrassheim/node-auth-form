@@ -1,7 +1,7 @@
 <p>
   Please register with a username and password
 </p>
-<form name="registrationForm" class="needs-validation" (ngSubmit)="f.form.valid && save()" #f="ngForm" novalidation>
+<form name="registrationForm" class="needs-validation" passwordsMatchValidator (ngSubmit)="f.form.valid && save()" #f="ngForm" novalidation>
   <div class="form-row">
     <div class="col-12">
         <label for="username">Username</label>
@@ -30,6 +30,9 @@
          <div *ngIf="f.submitted && repeatModel.invalid" class="invalid-feedback">
             <div *ngIf="repeatModel.errors.required">Please repeat the password</div>
         </div>
+        <div *ngIf="f.submitted && f.invalid" class="invalid-feedback">
+          <div *ngIf="f.errors.passwordsMatchValidator">The passwords must match</div>
+      </div>
     </div>
   </div>
   <div class="btn-group" role="group" aria-label="Login Buttons">
