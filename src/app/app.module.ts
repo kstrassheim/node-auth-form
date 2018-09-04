@@ -5,7 +5,7 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing/app-routing.module';
 
 import { AppComponent } from './app.component';
-import { RegistrationComponent } from './registration/registration.component';
+import { RegistrationComponent, PasswordsMatchDirective } from './registration/registration.component';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { CollapseModule, BsDropdownModule  } from 'ngx-bootstrap';
@@ -17,7 +17,7 @@ import { CookieModule } from 'ngx-cookie';
 @NgModule({
   declarations: [
     AppComponent,
-    RegistrationComponent,
+    RegistrationComponent,PasswordsMatchDirective,
     LoginComponent,
     HomeComponent
   ],

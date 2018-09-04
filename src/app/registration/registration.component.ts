@@ -9,18 +9,13 @@ export const PasswordsMatchValidator = (fg: FormGroup): ValidatorFn => (control:
   if(password===repeat) {
       return null;
   }
-  return { matchValidator: { valid: false } };
+  return { passwordsMatchValidator: { valid: false } };
 }
 @Directive({  
-  selector: '[PasswordsMatchValidator][ngModel]',  
-  providers: [  
-   {  
-    provide: NG_VALIDATORS,  
-    useExisting: NG_VALIDATORS,  
-    multi: true  
-   }  
-  ]  
- })
+    selector: '[PasswordsMatchValidator][ngModel]',  
+    providers: [{ provide: NG_VALIDATORS,useExisting: NG_VALIDATORS, multi: true } ]  
+})
+export class PasswordsMatchDirective {}
 
 @Component({
   selector: 'app-registration',
