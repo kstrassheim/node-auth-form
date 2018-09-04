@@ -74,8 +74,6 @@ describe('AppComponent without cookie token', () => {
     
   }));
 
-  
-
   it('check title', async(() => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
