@@ -8,7 +8,7 @@
       <input id="username" class="form-control" [(ngModel)]="username" type="text" required
         name="username" #usernameModel="ngModel" [ngClass]="{ 'is-invalid': f.submitted && usernameModel.invalid }" />
       <div *ngIf="f.submitted && usernameModel.invalid" class="invalid-feedback">
-        <div *ngIf="usernameModel.errors.required">Username is required</div>
+        <div *ngIf="usernameModel.errors.required">Please enter a username</div>
       </div>
     </div>
   </div>
@@ -16,25 +16,24 @@
     <div class="col-12 form-group">
       <label for="password">Password</label>
       <input class="form-control" [(ngModel)]="password" type="password" required
-        name="password" validateEqual="repeat" reverse="true" #passwordModel="ngModel" [ngClass]="{ 'is-invalid': f.submitted && passwordModel.invalid }" />
+        name="password" validateEqual="repeat" #passwordModel="ngModel" [ngClass]="{ 'is-invalid': f.submitted && passwordModel.invalid }" />
       <div *ngIf="f.submitted && passwordModel.invalid" class="invalid-feedback">
         <div *ngIf="passwordModel.errors.required">Please enter a password</div>
       </div>
-      <!--<pre *ngIf="password.errors" class="margin-20">{{ password.errors | json }}</pre>-->
     </div>
   </div>
   <div class="form-row">
     <div class="col-12 form-group">
       <label for="repeat">Repeat</label>
       <input id="repeat" class="form-control" [(ngModel)]="repeat" type="password" required
-        name="repeat" validateEqual="password" reverse="false" #repeatModel="ngModel" [ngClass]="{ 'is-invalid': f.submitted && repeatModel.invalid }" />
+        name="repeat" validateEqual="password" #repeatModel="ngModel" [ngClass]="{ 'is-invalid': f.submitted && repeatModel.invalid }" />
       <div *ngIf="f.submitted && repeatModel.invalid" class="invalid-feedback">
         <div *ngIf="repeatModel.errors.required">Please repeat the password</div>
+        <div *ngIf="repeatModel.errors.validateEqual">
+          The passwords must match
+        </div>
       </div>
-      <div *ngIf="!repeat.valid && !(repeat.pristine && f.submitted)" class="invalid-feedback">
-        Password mismatch
-      </div>
-      <!--<pre *ngIf="repeat.errors" class="margin-20">{{ repeat.errors | json }}</pre>-->
+  
     </div>
   </div>
   <div class="btn-group" role="group" aria-label="Login Buttons">
