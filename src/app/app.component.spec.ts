@@ -12,28 +12,28 @@ import { doesNotThrow } from 'assert';
 
 const testExampleToken = exampleToken;
 let cookieServiceStub: Partial<CookieService>;
-cookieServiceStub = { 
-  get : (key:string) => {
+cookieServiceStub = {
+  get : (key: string) => {
     return null;
   },
-  put : (key:string,value:string) => {}
+  put : (key: string, value: string) => {}
 };
 
 // mock window methods
 
-const exampleRedirectUrl = 'http://www.google.ch?token={0}'
+const exampleRedirectUrl = 'http://www.google.ch?token={0}';
 const exampleRedirectUrlParam = encodeURIComponent(exampleRedirectUrl);
 const exampleFinalRedirectUrl = exampleRedirectUrl.replace('{0}', exampleToken);
 
-(<any>AppComponent.prototype).getWindowLocationHref = () => {  return window.location.href + '?redirectUrl=' + exampleRedirectUrlParam; };
-(<any>AppComponent.prototype).setWindowLocationHref = (url:string) => { };
+(<any>AppComponent.prototype).getWindowLocationHref = () => window.location.href + '?redirectUrl=' + exampleRedirectUrlParam;
+(<any>AppComponent.prototype).setWindowLocationHref = (url: string) => { };
 
 const testBedConfig = {
   declarations: [
     AppComponent
   ],
   imports: [RouterTestingModule, FormsModule],
-  providers: [ 
+  providers: [
     {provide: AuthApiService, useValue: new AuthApiServiceMockSuccess() },
     {provide: LoggerService, useValue: new LoggerService() },
     {provide: CookieService, useValue: cookieServiceStub },
@@ -54,8 +54,8 @@ describe('AppComponent without cookie token', () => {
   it(`saves redirect url`, fakeAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
-    spyOn((<any>app), "getWindowLocationHref").and.callThrough();
-    spyOn((<any>app), "setWindowLocationHref").and.callThrough();
+    spyOn((<any>app), 'getWindowLocationHref').and.callThrough();
+    spyOn((<any>app), 'setWindowLocationHref').and.callThrough();
     app.ngOnInit();
     expect((<any>app).getWindowLocationHref).toHaveBeenCalled();
     expect(app.redirectUrl).toEqual(exampleRedirectUrl);
@@ -64,14 +64,13 @@ describe('AppComponent without cookie token', () => {
   it('redirects after logon', fakeAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
-    spyOn((<any>app), "setWindowLocationHref").and.callFake((redirectUrl:string) => {
+    spyOn((<any>app), 'setWindowLocationHref').and.callFake((redirectUrl: string) => {
       expect(redirectUrl).toEqual(exampleFinalRedirectUrl);
     });
     app.ngOnInit();
     app.onLoggedIn(testExampleToken);
     tick();
     expect((<any>app).setWindowLocationHref).toHaveBeenCalledTimes(1);
-    
   }));
 
   it('check title', async(() => {
@@ -85,15 +84,15 @@ describe('AppComponent without cookie token', () => {
 describe('AppComponent with cookie token - ', () => {
 
   let cookieServiceStubWithToken: Partial<CookieService>;
-  cookieServiceStubWithToken = { 
-    get : (key:string) => {
-      return key == 'token' ? testExampleToken : null;
+  cookieServiceStubWithToken = {
+    get : (key: string) => {
+      return key === 'token' ? testExampleToken : null;
     },
-    put : (key:string,value:string) => {}
+    put : (key: string, value: string) => {}
   };
 
-  let testBedConfigCookieServiceStubToken = cloneDeep(testBedConfig,true);
-  testBedConfigCookieServiceStubToken.providers[2].useValue = cookieServiceStubWithToken;  
+  const testBedConfigCookieServiceStubToken = cloneDeep(testBedConfig, true);
+  testBedConfigCookieServiceStubToken.providers[2].useValue = cookieServiceStubWithToken;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule(testBedConfigCookieServiceStubToken).compileComponents();
@@ -102,7 +101,7 @@ describe('AppComponent with cookie token - ', () => {
   it('redirects immediately with valid token', fakeAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
-    spyOn((<any>app), "setWindowLocationHref").and.callFake((redirectUrl:string) => {
+    spyOn((<any>app), 'setWindowLocationHref').and.callFake((redirectUrl: string) => {
       expect(redirectUrl).toEqual(exampleFinalRedirectUrl);
     });
     app.ngOnInit();

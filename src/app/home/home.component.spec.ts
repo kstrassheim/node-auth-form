@@ -9,7 +9,7 @@ describe('HomeComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ HomeComponent ],
-      providers:    [ 
+      providers: [
         {provide: LoggerService, useValue: new LoggerService() }
       ]
     })

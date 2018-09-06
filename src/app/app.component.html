@@ -12,7 +12,7 @@
   </ul>
   <ul [hidden]="!loggedOn" class="navbar-nav ml-auto">
       <li>{{username}}&nbsp;</li>
-      <li><a routerLink="/login" (click)="auth.logout()"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+      <li><a routerLink="/login" (click)="logout()"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
   </ul>
 </nav>
 <hr/>

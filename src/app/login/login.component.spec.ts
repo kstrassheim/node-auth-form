@@ -13,8 +13,8 @@ describe('LoginComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ LoginComponent ],
-      imports:[FormsModule, RouterTestingModule],
-      providers:    [ 
+      imports: [FormsModule, RouterTestingModule],
+      providers: [
         {provide: AuthApiService, useValue: new AuthApiServiceMockSuccess() },
         {provide: LoggerService, useValue: new LoggerService() }
       ]
@@ -53,8 +53,7 @@ describe('LoginComponent', () => {
     component.password = '1234';
     try {
       await component.login();
-    }
-    catch(err) {
+    } catch (err) {
       expect(component.auth.login).toHaveBeenCalledTimes(1);
       expect(component.log.logSuccess).toHaveBeenCalledTimes(0);
       expect(component.log.logError).toHaveBeenCalledTimes(1);

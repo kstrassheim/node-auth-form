@@ -10,13 +10,12 @@ import { EqualValidator } from '../directives/validateEqual';
 describe('RegistrationComponent', () => {
   let component: RegistrationComponent;
   let fixture: ComponentFixture<RegistrationComponent>;
-  let form: NgForm;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ RegistrationComponent, EqualValidator ],
-      imports:[FormsModule],
-      providers: [ 
+      imports: [FormsModule],
+      providers: [
         {provide: AuthApiService, useValue: new AuthApiServiceMockSuccess() },
         {provide: LoggerService, useValue: new LoggerService() }
       ]
@@ -28,7 +27,6 @@ describe('RegistrationComponent', () => {
     fixture = TestBed.createComponent(RegistrationComponent);
     fixture.detectChanges();
     component = fixture.componentInstance;
-    component.ngOnInit();
   }));
 
   it('should create', () => {
@@ -52,7 +50,7 @@ describe('RegistrationComponent', () => {
   });
 
   it('save exists', async (done) => {
-    spyOn(component.auth, 'register').and.callFake(async ()=>{ return new Promise<number>((resolve)=>resolve(2)); });
+    spyOn(component.auth, 'register').and.returnValue(Promise.resolve(2));
     spyOn(component.log, 'logSuccess').and.callThrough();
     spyOn(component.log, 'logWarning').and.callThrough();
     spyOn(component.log, 'logError').and.callThrough();
@@ -68,7 +66,7 @@ describe('RegistrationComponent', () => {
   });
 
   it('save failed', async (done) => {
-    spyOn(component.auth, 'register').and.callFake(async()=>{ return new Promise<number>((resolve, reject)=>reject('Test error')); });
+    spyOn(component.auth, 'register').and.returnValue(Promise.reject('Test error'));
     spyOn(component.log, 'logSuccess').and.callThrough();
     spyOn(component.log, 'logWarning').and.callThrough();
     spyOn(component.log, 'logError').and.callThrough();

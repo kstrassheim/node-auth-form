@@ -28,7 +28,7 @@
     <div class="col-12 form-group">
       <label for="repeat">Repeat</label>
       <input id="repeat" class="form-control" [(ngModel)]="repeat" type="password" required
-        name="repeat" validateEqual="password" #repeatModel="ngModel" [ngClass]="{ 'is-invalid': f.submitted && repeatModel.invalid }" />
+        name="repeat" appValidateEqual="password" #repeatModel="ngModel" [ngClass]="{ 'is-invalid': f.submitted && repeatModel.invalid }" />
       <div *ngIf="f.submitted && repeatModel.invalid" class="invalid-feedback">
         <div *ngIf="repeatModel.errors.required">Please repeat the password</div>
         <div *ngIf="repeatModel.errors.validateEqual">The passwords must match</div>
