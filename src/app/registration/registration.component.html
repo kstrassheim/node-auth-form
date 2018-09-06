@@ -16,7 +16,7 @@
     <div class="col-12 form-group">
       <label for="password">Password</label>
       <input class="form-control" [(ngModel)]="password" type="password" required
-        name="password" validateEqual="repeat" #passwordModel="ngModel" [ngClass]="{ 'is-invalid': f.submitted && passwordModel.invalid }" />
+        name="password" #passwordModel="ngModel" [ngClass]="{ 'is-invalid': f.submitted && passwordModel.invalid }" />
       <div *ngIf="f.submitted && passwordModel.invalid" class="invalid-feedback">
         <div *ngIf="passwordModel.errors.required">Please enter a password</div>
       </div>

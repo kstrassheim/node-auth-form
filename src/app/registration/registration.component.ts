@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import {NgForm} from '@angular/forms';
 import { AuthApiService } from '../services/auth-api.service';
 import { LoggerService } from '../services/logger.service';
 
@@ -9,6 +10,7 @@ import { LoggerService } from '../services/logger.service';
 })
 export class RegistrationComponent implements OnInit {
 
+  @ViewChild(NgForm) ngForm: NgForm;
   public username:string;
   public password:string;
   public repeat:string;
@@ -23,7 +25,7 @@ export class RegistrationComponent implements OnInit {
     try {
       const res = await this.auth.register(this.username, this.password);
       if (res === 1) this.log.logSuccess('Registration successfull');
-      if (res === 2) this.log.logWarning('Username is already existing');
+      else if (res === 2) this.log.logWarning('Username is already existing');
     }
     catch(err) {
       this.log.logError(err);
