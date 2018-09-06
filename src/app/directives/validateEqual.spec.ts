@@ -1,9 +1,9 @@
 import {CommonModule} from "@angular/common";
 import {FormsModule, NgForm} from "@angular/forms";
 import {Component, ViewChild} from "@angular/core";
-import {async, ComponentFixture, ComponentFixtureAutoDetect, TestBed} from "@angular/core/testing";
-import {EqualValidator} from '../directives/validateEqual';
+import {async, ComponentFixture, TestBed} from "@angular/core/testing";
 import {By} from "@angular/platform-browser";
+import {EqualValidator} from '../directives/validateEqual';
 describe('ValidateEqual', () => {
   let component: TestComponent;
   let fixture: ComponentFixture<TestComponent>;
@@ -11,9 +11,7 @@ describe('ValidateEqual', () => {
     TestBed.configureTestingModule({
       imports: [CommonModule, FormsModule],
       declarations: [TestComponent, EqualValidator],
-      providers: [
-        { provide: ComponentFixtureAutoDetect, useValue: true },
-      ]
+      providers: [ ]
     }).compileComponents();
   }));
   beforeEach(() => {

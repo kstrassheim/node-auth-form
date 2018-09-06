@@ -1,9 +1,11 @@
-<p>
-  Please register with a username and password
-</p>
 <form name="registrationForm" class="needs-validation" (ngSubmit)="f.form.valid && save()" #f="ngForm" novalidation>
   <div class="form-row">
-    <div class="col-12">
+    <p>
+      Please register with a username and password
+    </p>
+  </div>
+  <div class="form-row">
+    <div class="col-12 form-group">
       <label for="username">Username</label>
       <input id="username" class="form-control" [(ngModel)]="username" type="text" required
         name="username" #usernameModel="ngModel" [ngClass]="{ 'is-invalid': f.submitted && usernameModel.invalid }" />

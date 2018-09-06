@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthApiService } from '../services/auth-api.service';
 import { LoggerService } from '../services/logger.service';
+import { reject } from 'q';
 
 @Component({
   selector: 'app-login',
@@ -9,29 +10,24 @@ import { LoggerService } from '../services/logger.service';
 })
 export class LoginComponent implements OnInit {
 
-  public username = "";
-  public password = ""; 
+  public username = '';
+  public password = ''; 
 
-  constructor(public auth:AuthApiService, public log:LoggerService) {
-
-  }
+  constructor(public auth:AuthApiService, public log:LoggerService) {}
 
   public async login() {
-    if (!this.username) alert("Username missing");
-    else if (!this.password) alert("Password missing");
-    else {
+    return new Promise<void>(async (resolve, reject) => {
       try {
-        this.auth.onLoggedIn.subscribe(t=> {
-          this.log.logInfo(`Login successfull`);
-          this.reset();
-        })
-
         await this.auth.login(this.username, this.password);
+        this.log.logSuccess('Login successfull');
+        this.reset();
+        resolve();
       }
       catch(err) {
         this.log.logError(err);
+        reject(err);
       }
-    }
+    });
   }
 
   public reset() {

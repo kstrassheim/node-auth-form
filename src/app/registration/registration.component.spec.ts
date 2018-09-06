@@ -1,7 +1,6 @@
-import { async, ComponentFixture,ComponentFixtureAutoDetect, TestBed, fakeAsync, tick, flush, resetFakeAsyncZone } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, NgForm } from '@angular/forms';
 
-import { CommonModule } from "@angular/common";
 import { AuthApiServiceMockSuccess } from '../../testing/service-mockups';
 import { AuthApiService } from '../services/auth-api.service';
 import { LoggerService } from '../services/logger.service';
@@ -16,11 +15,10 @@ describe('RegistrationComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ RegistrationComponent, EqualValidator ],
-      imports:[CommonModule, FormsModule],
+      imports:[FormsModule],
       providers: [ 
         {provide: AuthApiService, useValue: new AuthApiServiceMockSuccess() },
-        {provide: LoggerService, useValue: new LoggerService() },
-        { provide: ComponentFixtureAutoDetect, useValue: true }
+        {provide: LoggerService, useValue: new LoggerService() }
       ]
     })
     .compileComponents();
