@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { AuthApiService } from '../services/auth-api.service';
 import { LoggerService } from '../services/logger.service';
 
@@ -7,37 +8,26 @@ import { LoggerService } from '../services/logger.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
 
-  public username = "";
-  public password = ""; 
+  @ViewChild(NgForm) ngForm: NgForm;
 
-  constructor(public auth:AuthApiService, public log:LoggerService) {
+  public username = '';
+  public password = '';
 
-  }
+  constructor(public auth: AuthApiService, public log: LoggerService) {}
 
   public async login() {
-    if (!this.username) alert("Username missing");
-    else if (!this.password) alert("Password missing");
-    else {
+    return new Promise<void>(async (resolve, reject) => {
       try {
-        this.auth.setUsernameAndPassword(this.username, this.password);
-        await this.auth.login();
-        this.log.logInfo(`Login successfull`);
-        this.reset();
-      }
-      catch(err) {
+        await this.auth.login(this.username, this.password);
+        this.log.logSuccess('Login successfull');
+        this.ngForm.resetForm();
+        resolve();
+      } catch (err) {
         this.log.logError(err);
+        reject(err);
       }
-    }
-  }
-
-  public reset() {
-    this.username = "";
-    this.password = "";
-  }
-
-  ngOnInit() {
-    this.reset();
+    });
   }
 }

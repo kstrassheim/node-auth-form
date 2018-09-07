@@ -1,94 +1,136 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { BehaviorSubject, Subject, Observable } from 'rxjs';
-import { ReadKeyExpr } from '@angular/compiler';
-
-export interface ITokenResponse {
-  token:string;
-  expires:number;
-}
+import { Subject } from 'rxjs/Subject';
 
 @Injectable()
 export class AuthApiService {
 
-  private static url = "https://nodeauthweb.azurewebsites.net/auth/login";
+  private static baseUrl = 'https://nodeauthweb.azurewebsites.net/auth';
+  public onLoggedIn = new Subject<string>();
 
-  protected username = new BehaviorSubject<string>(null);
-  public readonly username$ = this.username.asObservable();
-  protected password = new BehaviorSubject<string>(null);
-  public readonly password$ = this.password.asObservable();
-  protected token = new BehaviorSubject<string>(null);
-  public readonly token$ = this.token.asObservable();
-  protected tokenExpiration= new BehaviorSubject<number>(null);
-  public readonly tokenExpiration$ = this.tokenExpiration.asObservable();
-  //public redirectUrl = new BehaviorSubject<string>(null);
-
-  public readonly onLoggedIn = new Subject<string>();
-
-  public setUsernameAndPassword(username:string, password:string, token?:string, tokenExpiration?:number) {
-    console.log("set username password");
-    this.username.next(username);
-    this.password.next(password);
-    if (token) this.token.next(token);
-    if (tokenExpiration) this.tokenExpiration.next(tokenExpiration);
-    console.log("try call on logged on subject");
-    if (token) this.onLoggedIn.next(token);
+  protected errorLog(err: string) {
+    console.error(err);
   }
 
-  public logout() {
-    this.setUsernameAndPassword(null, null);
-    this.token.next(null);
-    this.tokenExpiration.next(null);
-  }
-
-  public async getToken() {
-    try 
-    {
-      if (!this.token.getValue() || !this.tokenExpiration.getValue() || (Date.now() > this.tokenExpiration.getValue())) {
-        await this.login();
+  protected async sendTokenValidation(token) {
+    return new Promise<boolean>(async (resolve, reject) => {
+      try {
+        const params = {access_token: token};
+        const searchParams = Object.keys(params).map((key) => {
+          return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
+        }).join('&');
+        const result = await fetch(`${AuthApiService.baseUrl}/validate`, {
+          method: 'POST',
+          mode: 'cors',
+          cache: 'no-cache',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: searchParams
+        });
+        const data = await result.json();
+        if (!data) { throw new Error('Response is not valid'); }
+        resolve(data.id > 0);
+      } catch (err) {
+        reject(err);
       }
-        
-      return Promise.resolve(this.token.getValue());
-    }
-    catch(err){
-      return Promise.reject(err);
-    }
+    });
   }
 
-  public async login():Promise<void> {
-    try {
-      let data = await this.sendLogin(this.username.getValue(), this.password.getValue());
-      this.tokenExpiration.next((Date.now() + data.expires));
-      this.token.next(data.token);
-      this.onLoggedIn.next(data.token);
-      return Promise.resolve();
-    }
-    catch(err) {
-      this.logout();
-      return Promise.reject(err);
-    }
-  }
-
-  protected sendLogin(username:string, password:string):Promise<ITokenResponse> {
-    return new Promise((resolve, reject) => {
-      Observable.ajax({
-        url: AuthApiService.url,
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: {
+  protected async sendLogin(username: string, password: string) {
+    return new Promise<string>(async (resolve, reject) => {
+      try {
+        const params = {
           grant_type: 'password',
           username: username,
           password: password,
-          client_id: "angular",
-          client_secret: "angular"
-        }
-      }).subscribe((data) => { 
-        resolve(<ITokenResponse>{token:data.response.access_token, expires: parseInt(data.response.expires_in)});
-      }, err => {
+          client_id: 'angular',
+          client_secret: 'angular'
+        };
+        const searchParams = Object.keys(params).map((key) => {
+          return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
+        }).join('&');
+        const result = await fetch(`${AuthApiService.baseUrl}/login`, {
+          method: 'POST',
+          mode: 'cors',
+          cache: 'no-cache',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: searchParams
+        });
+        const data = await result.json();
+        if (!data) { throw new Error('Response is not valid'); }
+        resolve(data.access_token);
+      } catch (err) {
         reject(err);
+      }
     });
-  });
+  }
+
+  public async setTokenIfValid(token: string) {
+    return new Promise<void>(async (resolve, reject) => {
+      try {
+        if (token) {
+          const valid = await this.sendTokenValidation(token);
+          if (valid) { this.onLoggedIn.next(token); }
+        }
+        resolve();
+      } catch (err) {
+        this.errorLog(err);
+        reject(err);
+      }
+    });
+  }
+
+  public async login(username: string, password: string) {
+    return new Promise<void>(async (resolve, reject) => {
+      try {
+        const token = await this.sendLogin(username, password);
+        await this.setTokenIfValid(token);
+        resolve();
+      } catch (err) {
+        this.errorLog(err);
+        reject(err);
+      }
+    });
+  }
+
+  protected async sendRegistration(username: string, password: string) {
+    return new Promise<number>(async (resolve, reject) => {
+      try {
+        const params = {
+          username: username,
+          password: password
+        };
+        const searchParams = Object.keys(params).map((key) => {
+          return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
+        }).join('&');
+        const result = await fetch(`${AuthApiService.baseUrl}/registerUser`, {
+          method: 'POST',
+          mode: 'cors',
+          cache: 'no-cache',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: searchParams
+        });
+        const data = await result.json();
+        if (!data) { throw new Error('Response is not valid'); }
+        const status = parseInt(data.status, 10);
+        if (status === 0) {
+          reject(data.error);
+        } else {
+          resolve(status);
+        }
+      } catch (err) {
+        reject(err);
+      }
+    });
+  }
+
+  public async register(username: string, password: string) {
+    return new Promise<number>(async (resolve, reject) => {
+      try {
+        const res = await this.sendRegistration(username, password);
+        resolve(res);
+      } catch (err) {
+        this.errorLog(err);
+        reject(err);
+      }
+    });
   }
 }

@@ -1,31 +1,42 @@
-<p>
-  Please register with a username and password
-</p>
-<div class="row">
-  <div class="col-4">
-    <label for="username">Username</label>
+<form name="registrationForm" class="needs-validation" (ngSubmit)="f.form.valid && save()" #f="ngForm" novalidation>
+  <div class="form-row">
+    <p>
+      Please register with a username and password
+    </p>
   </div>
-  <div class="col-8">
-    <input id="username" class="form-control" [(ngModel)]="username" type="text" />
+  <div class="form-row">
+    <div class="col-12 form-group">
+      <label for="username">Username</label>
+      <input id="username" class="form-control" [(ngModel)]="username" type="text" required
+        name="username" #usernameModel="ngModel" [ngClass]="{ 'is-invalid': f.submitted && usernameModel.invalid }" />
+      <div *ngIf="f.submitted && usernameModel.invalid" class="invalid-feedback">
+        <div *ngIf="usernameModel.errors.required">Please enter a username</div>
+      </div>
+    </div>
   </div>
-</div>
-<div class="row">
-    <div class="col-4">
+  <div class="form-row">
+    <div class="col-12 form-group">
       <label for="password">Password</label>
+      <input class="form-control" [(ngModel)]="password" type="password" required
+        name="password" #passwordModel="ngModel" [ngClass]="{ 'is-invalid': f.submitted && passwordModel.invalid }" />
+      <div *ngIf="f.submitted && passwordModel.invalid" class="invalid-feedback">
+        <div *ngIf="passwordModel.errors.required">Please enter a password</div>
+      </div>
     </div>
-    <div class="col-8">
-      <input id="password" class="form-control" [(ngModel)]="password" type="password" />
+  </div>
+  <div class="form-row">
+    <div class="col-12 form-group">
+      <label for="repeat">Repeat</label>
+      <input id="repeat" class="form-control" [(ngModel)]="repeat" type="password" required
+        name="repeat" appValidateEqual="password" #repeatModel="ngModel" [ngClass]="{ 'is-invalid': f.submitted && repeatModel.invalid }" />
+      <div *ngIf="f.submitted && repeatModel.invalid" class="invalid-feedback">
+        <div *ngIf="repeatModel.errors.required">Please repeat the password</div>
+        <div *ngIf="repeatModel.errors.validateEqual">The passwords must match</div>
+      </div>
     </div>
-</div>
-<div class="row">
-  <div class="col-4">
-    <label for="repeat">Repeat</label>
   </div>
-  <div class="col-8">
-    <input id="repeat" class="form-control" [(ngModel)]="repeat" type="repeat" />
+  <div class="btn-group" role="group" aria-label="Login Buttons">
+    <button class="btn btn-primary">Save</button>
+    <button type="reset" class="btn btn-secondary">Reset</button>
   </div>
-</div>
-<div class="btn-group" role="group" aria-label="Login">
-    <button type="button" class="btn btn-primary" (click)="save()">Save</button>
-    <button type="button" class="btn btn-secondary" (click)="reset()">Reset</button>
-</div>
+</form>
