@@ -20,13 +20,13 @@ export class AppComponent implements OnInit, AfterViewInit {
   public username = '';
   private redirectUrl: string = null;
 
-  constructor(private router: Router, public auth: AuthApiService, public log: LoggerService, private cookie: CookieService) {}
+  constructor(private router: Router, public auth: AuthApiService, public log: LoggerService, private cookie: CookieService) {
+    this.auth.onLoggedIn.subscribe(this.onLoggedIn.bind(this));
+  }
 
   public ngOnInit() {
     console.log('App - OnInit');
     this.saveRedirectUrlFromQueryParameters();
-    this.auth.onLoggedIn.subscribe(this.onLoggedIn.bind(this));
-
     // get token from cookie
     this.auth.setTokenIfValid(this.cookie.get('token'));
   }
