@@ -28,8 +28,8 @@ export class AuthApiService {
         });
         const data = await result.json();
         console.log('Validate token result:', data);
-        if (!data || !data.message) { throw new Error('Response is not valid'); }
-        resolve(data.message.id > 0);
+        if (!data) { throw new Error('Response is not valid'); }
+        resolve(data.message && data.message.id > 0);
       } catch (err) {
         reject(err);
       }

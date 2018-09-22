@@ -76,12 +76,15 @@ export class AppComponent implements OnInit, AfterViewInit {
   protected onLoggedIn(token: string) {
     this.cookie.put('token', token);
     this.loggedOn = token ? true : false;
+    console.log(`Logged in, redirectUrl`, this.redirectUrl);
     if (this.redirectUrl) {
       if (this.redirectUrl && !this.redirectUrl.toLowerCase().startsWith('http')) {
+        this.log.logInfo(`Navigate back to original site by router.navigateByUrl: ${this.redirectUrl}`, false);
         this.router.navigateByUrl(this.redirectUrl);
         this.redirectUrl = null;
       } else {
         // navigate back to original site
+        this.log.logInfo(`Navigate back to original site window.location.href: ${this.redirectUrl}`, false);
         this.setWindowLocationHref(this.redirectUrl.replace('{0}', token));
       }
     }
