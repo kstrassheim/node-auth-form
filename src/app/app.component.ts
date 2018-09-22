@@ -22,7 +22,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   constructor(private router: Router, public auth: AuthApiService, public log: LoggerService, private cookie: CookieService) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     console.log('App - OnInit');
     this.saveRedirectUrlFromQueryParameters();
     this.auth.onLoggedIn.subscribe(this.onLoggedIn.bind(this));
@@ -31,7 +31,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.auth.setTokenIfValid(this.cookie.get('token'));
   }
 
-  ngAfterViewInit() {
+  public ngAfterViewInit() {
     console.log('App - After Init');
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart && !this.loading) {
