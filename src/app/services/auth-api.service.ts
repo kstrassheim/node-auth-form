@@ -70,7 +70,12 @@ export class AuthApiService {
       try {
         if (token) {
           const valid = await this.sendTokenValidation(token);
-          if (valid) { this.onLoggedIn.next(token); }
+          if (valid) {
+            console.log('Login valid');
+            this.onLoggedIn.next(token);
+          } else {
+            console.log('Login invalid');
+          }
         }
         resolve();
       } catch (err) {
