@@ -14,6 +14,7 @@ export class AuthApiService {
   protected async sendTokenValidation(token) {
     return new Promise<boolean>(async (resolve, reject) => {
       try {
+        console.log('Validate token:', token);
         const params = {access_token: token};
         const searchParams = Object.keys(params).map((key) => {
           return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
@@ -27,7 +28,7 @@ export class AuthApiService {
         });
         const data = await result.json();
         if (!data || !data.message) { throw new Error('Response is not valid'); }
-        console.log('Validate token:', data);
+        console.log('Validate token result:', data);
         resolve(data.message.id > 0);
       } catch (err) {
         reject(err);
