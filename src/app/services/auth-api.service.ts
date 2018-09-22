@@ -27,8 +27,8 @@ export class AuthApiService {
           body: searchParams
         });
         const data = await result.json();
-        if (!data || !data.message) { throw new Error('Response is not valid'); }
         console.log('Validate token result:', data);
+        if (!data || !data.message) { throw new Error('Response is not valid'); }
         resolve(data.message.id > 0);
       } catch (err) {
         reject(err);
